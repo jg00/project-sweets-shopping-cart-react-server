@@ -17,9 +17,15 @@ router.post("/", (req, res) => {
   const isAdmin = req.body.isAdmin;
 
   User.findOne({ email: email }).then(user => {
-    if (!user) return res.send("User email not found.");
+    // if (!user) return res.send("User email not found.");
+    if (!user)
+      return res.json({
+        success: false,
+        message: "User email not found."
+      });
 
     if (user) {
+      // console.log("who is ths", user);
       let persistedUser = user;
 
       // check for the password
@@ -39,7 +45,14 @@ router.post("/", (req, res) => {
 
           // send back the token to the user
           console.log("server - ", token);
-          res.json({ token: token });
+          res.json({
+            token: token,
+            userData: {
+              email: persistedUser.email,
+              name: persistedUser.name,
+              isAdmin: persistedUser.isAdmin
+            }
+          });
         } else {
           // password dont match
           res.json({
