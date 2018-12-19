@@ -11,11 +11,20 @@ router.get("/test", (req, res) => {
 router.post("/add", (req, res) => {
   //   console.log(req.body);
   //   res.json(req.body);
+  // continue here
+  const name = req.body.name;
+  const price = req.body.price;
+  const types = req.body.types;
+  const image = req.body.image;
+
+  // Product.findById(id)
+
   const product = new Product({
     product: {
       name: "name01",
       price: 10.98,
-      typeOfChocolate: "dark01"
+      types: "dark023",
+      image: "imageplaceholder"
     }
   });
 
