@@ -4,8 +4,8 @@ const productSchema = new mongoose.Schema({
   product: {
     name: { type: String, required: true },
     price: { type: Number, required: true },
-    types: String,
-    image: { type: String, require: true },
+    types: { type: String, default: "None" },
+    image: { type: String, required: true },
     entryDate: { type: Date, default: Date.now }
   }
 });

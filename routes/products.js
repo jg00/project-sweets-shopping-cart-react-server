@@ -7,39 +7,109 @@ router.get("/test", (req, res) => {
   res.json({ name: "GET api/products/test" });
 });
 
+// api/products/display
+router.get("/display", (req, res) => {
+  // res.json({ name: "GET api/products/display" });
+
+  Product.find({})
+    .then(products => res.json(products)) // array
+    .catch(err =>
+      res.json({
+        success: false,
+        message: "Unable to retreive products from database."
+      })
+    );
+});
+
 // api/products/add
 router.post("/add", (req, res) => {
-  //   console.log(req.body);
-  //   res.json(req.body);
-  // continue here
+  console.log(req.body);
+
   const name = req.body.name;
   const price = req.body.price;
   const types = req.body.types;
   const image = req.body.image;
 
-  // Product.findById(id)
+  Product.findOne({ "product.name": name }).then(product => {
+    // console.log(product);
 
-  const product = new Product({
-    product: {
-      name: "name01",
-      price: 10.98,
-      types: "dark023",
-      image: "imageplaceholder"
+    if (product)
+      return res.json({
+        success: false,
+        message: "Product name already exits."
+      });
+
+    const newProduct = new Product({
+      product: {
+        name: name,
+        price: price,
+        types: types,
+        image: image
+      }
+    });
+
+    newProduct
+      .save()
+      // .then(product => res.json(product))  // worked but changed with just a response below
+      .then(product =>
+        res.json({
+          success: true,
+          message: "Product added to database."
+        })
+      )
+      .catch(err =>
+        res.json({
+          success: false,
+          message:
+            "Product not added to database.  Check all fields required populated."
+        })
+      );
+
+    // res.json(newProduct);
+  });
+});
+
+// api/products/display
+router.post("/delete/:id", (req, res) => {
+  // res.json({ name: "GET api/products/delete/:id" });
+
+  const productId = req.params.id;
+  // res.json({ name: productId });
+  // res.send("test");
+
+  Product.findByIdAndDelete({ _id: productId }, (err, doc) => {
+    // console.log(err);
+    // console.log(res); // returns me the product
+
+    if (doc) {
+      // returns me the product that was deleted
+      res.json({
+        success: true,
+        message: "ProductId: " + productId + " deleted."
+      });
+    } else {
+      res.json({
+        success: false,
+        message: "Product id not found."
+      });
     }
   });
 
-  product
-    .save()
-    .then(product => res.json(product))
-    .catch(err => res.json({ error: "Unable to save product", err }));
+  // Product.findByIdAndDelete({ _id: productId }, err => {
+  //   if (!err) {
+  //     res.json({
+  //       success: true,
+  //       message: "ProductId: " + productId + " deleted."
+  //     });
+  //   } else {
+  //     res.json({
+  //       success: false,
+  //       message: "Unable to delete productId: " + productId
+  //     });
+  //   }
+  // });
 
-  //   product.save((error, returnedOrder) => {
-  //     if (error) {
-  //       res.status(500).json({ error: "Unable to create product" });
-  //       return;
-  //     }
-  //     res.json({ returnedOrder });
-  //   });
+  // res.send("testing");
 });
 
 module.exports = router;
