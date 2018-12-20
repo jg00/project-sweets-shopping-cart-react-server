@@ -50,13 +50,13 @@ router.post("/add", (req, res) => {
 
     newProduct
       .save()
-      // .then(product => res.json(product))  // worked but changed with just a response below
-      .then(product =>
-        res.json({
-          success: true,
-          message: "Product added to database."
-        })
-      )
+      .then(product => res.json(product)) // worked but changed with just a response below
+      // .then(product =>     // need to return the product object above to add to redux products array
+      //   res.json({
+      //     success: true,
+      //     message: "Product added to database."
+      //   })
+      // )
       .catch(err =>
         res.json({
           success: false,
